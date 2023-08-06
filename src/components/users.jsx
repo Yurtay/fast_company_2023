@@ -5,9 +5,9 @@ import paginate from "../utils/paginate";
 import PropTypes from "prop-types";
 import GroupList from "./groupList";
 import API from "../app/api";
+import SearchStatus from "./searchStatus";
 
 const Users = ({ users: allUsers, ...rest }) => {
-  const count = allUsers.length;
   const pageSize = 4;
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
@@ -17,6 +17,10 @@ const Users = ({ users: allUsers, ...rest }) => {
     API.professions.fetchAll().then((data) => setProfessions(data));
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedProf]);
+
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
@@ -25,52 +29,59 @@ const Users = ({ users: allUsers, ...rest }) => {
   };
 
   const filteredUsers = selectedProf
-    ? allUsers.filter((user) => {
-        if (user.profession !== selectedProf) {
-          console.log(user.profession, selectedProf);
-        }
-
-        return user.profession === selectedProf;
-      })
+    ? allUsers.filter((user) => user.profession._id === selectedProf._id)
     : allUsers;
-  console.log(filteredUsers, selectedProf);
+  const count = filteredUsers.length;
   const usersCrop = paginate(filteredUsers, currentPage, pageSize);
 
-  return (
-    <>
-      {professions && (
-        <GroupList
-          selectedItem={selectedProf}
-          items={professions}
-          onItemSelect={handleProfesionSelect}
-        />
-      )}
+  const clearFilter = () => {
+    setSelectedProf();
+  };
 
-      <table className="table">
-        <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Qualities</th>
-            <th scope="col">Profession</th>
-            <th scope="col">Meets</th>
-            <th scope="col">Rate</th>
-            <th scope="col">Bookmark</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {usersCrop.map((user) => (
-            <User key={user._id} {...rest} {...user} />
-          ))}
-        </tbody>
-      </table>
-      <Pagination
-        itemsCount={count}
-        pageSize={pageSize}
-        onPageChange={handlePageChange}
-        currentPage={currentPage}
-      />
-    </>
+  return (
+    <div className="d-flex">
+      {professions && (
+        <div className="d-flex flex-column flex-shrink-0 p-3">
+          <GroupList
+            selectedItem={selectedProf}
+            items={professions}
+            onItemSelect={handleProfesionSelect}
+          />
+          <button onClick={clearFilter} className="btn btn-secondary mt-2">
+            Clear
+          </button>
+        </div>
+      )}
+      <div className="d-flex flex-column">
+        <SearchStatus numberOfUser={count} />
+        <table className="table">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Qualities</th>
+              <th scope="col">Profession</th>
+              <th scope="col">Meets</th>
+              <th scope="col">Rate</th>
+              <th scope="col">Bookmark</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {usersCrop.map((user) => (
+              <User key={user._id} {...rest} {...user} />
+            ))}
+          </tbody>
+        </table>
+        <div className="d-flex justify-content-center">
+          <Pagination
+            itemsCount={count}
+            pageSize={pageSize}
+            onPageChange={handlePageChange}
+            currentPage={currentPage}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
 

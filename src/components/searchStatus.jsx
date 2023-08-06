@@ -1,6 +1,6 @@
 import React from "react";
 
-const RenderPhrase = ({ numberOfUser }) => {
+const SearchStatus = ({ numberOfUser }) => {
   let color = "badge bg-primary";
   let message = numberOfUser + " человек тусанет с тобой сегодня";
   if (numberOfUser < 5 && numberOfUser > 1) {
@@ -18,4 +18,4 @@ const RenderPhrase = ({ numberOfUser }) => {
   );
 };
 
-export default RenderPhrase;
+export default SearchStatus;

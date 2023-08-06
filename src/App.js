@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Users from "./components/users";
-import RenderPhrase from "./components/searchStatus";
 import API from "./app/api";
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
   };
   return (
     <>
-      <RenderPhrase numberOfUser={users.length} />
       <Users
         users={users}
         onDelete={handleDelete}
