@@ -1,13 +1,14 @@
 import React from "react";
 const TableHeader = ({ onSort, selectedSort, columns }) => {
   const handleSort = (item) => {
-    if ((selectedSort.pass = item)) {
+    console.log(item);
+    if ((selectedSort.path = item)) {
       onSort({
         ...selectedSort,
         order: selectedSort.order === "asc" ? "desc" : "asc",
       });
     } else {
-      onSort({ pass: item, order: "asc" });
+      onSort({ path: item, order: "asc" });
     }
   };
   return (
@@ -17,11 +18,11 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
           <th
             key={column}
             onClick={
-              columns[column].iter
-                ? () => handleSort(columns[column].iter)
+              columns[column].path
+                ? () => handleSort(columns[column].path)
                 : undefined
             }
-            role={columns[column].iter && "button"}
+            role={columns[column].path && "button"}
             scope="col"
           >
             {columns[column].name}
