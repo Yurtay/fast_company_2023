@@ -1,5 +1,16 @@
 import React from "react";
 const TableHeader = ({ onSort, selectedSort, columns }) => {
+  const renderSortArrow = (selectedSort, currentPath) => {
+    if (selectedSort.path === currentPath) {
+      if (selectedSort.order === "asc") {
+        return <i className="bi bi-chevron-compact-down m-2"></i>;
+      } else {
+        return <i className="bi bi-chevron-compact-up m-2"></i>;
+      }
+    }
+    return null;
+  };
+
   const handleSort = (item) => {
     console.log(item);
     if ((selectedSort.path = item)) {
@@ -11,6 +22,7 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
       onSort({ path: item, order: "asc" });
     }
   };
+
   return (
     <thead>
       <tr>
@@ -25,7 +37,10 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
             role={columns[column].path && "button"}
             scope="col"
           >
-            {columns[column].name}
+            <div>
+              {columns[column].name}
+              {renderSortArrow(selectedSort, columns[column].path)}
+            </div>
           </th>
         ))}
       </tr>

@@ -8,7 +8,7 @@ import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
 import _ from "lodash";
 
-const Users = () => {
+const UsersList = () => {
   const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
@@ -111,4 +111,4 @@ Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
 };
 
-export default Users;
+export default UsersList;
