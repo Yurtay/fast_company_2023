@@ -4,7 +4,6 @@ import QualitiesList from "./qualitiesList";
 import { useHistory } from "react-router-dom";
 
 const UserPage = ({ userId }) => {
-  // 67rdca3eeb7f6fgeed47181r
   const history = useHistory();
   const [user, setUser] = useState();
   useEffect(() => {
