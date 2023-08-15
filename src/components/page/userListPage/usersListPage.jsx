@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination";
-import paginate from "../utils/paginate";
+import Pagination from "../../common/pagination";
+import paginate from "../../../utils/paginate";
 import PropTypes from "prop-types";
-import GroupList from "./groupList";
-import API from "../app/api";
-import SearchStatus from "./searchStatus";
-import UsersTable from "./usersTable";
+import GroupList from "../../common/groupList";
+import API from "../../../app/api";
+import SearchStatus from "../../ui/searchStatus";
+import UsersTable from "../../usersTable";
 import _ from "lodash";
 
-const UsersList = () => {
+const UsersListPage = () => {
   const pageSize = 8;
   const [currentPage, setCurrentPage] = useState(1);
   const [professions, setProfessions] = useState();
   const [selectedProf, setSelectedProf] = useState();
   const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
   const [users, setUsers] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
     API.users.fetchAll().then((data) => setUsers(data));
   }, []);
@@ -40,13 +41,19 @@ const UsersList = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedProf]);
+  }, [selectedProf, searchQuery]);
 
   const handlePageChange = (pageIndex) => {
     setCurrentPage(pageIndex);
   };
   const handleProfesionSelect = (item) => {
+    if (searchQuery !== "") setSearchQuery("");
     setSelectedProf(item);
+  };
+
+  const handleSearchQuery = ({ target }) => {
+    setSelectedProf(undefined);
+    setSearchQuery(target.value);
   };
 
   const handleSort = (item) => {
@@ -54,7 +61,12 @@ const UsersList = () => {
   };
 
   if (users) {
-    const filteredUsers = selectedProf
+    const filteredUsers = searchQuery
+      ? users.filter(
+          (user) =>
+            user.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+        )
+      : selectedProf
       ? users.filter((user) => user.profession._id === selectedProf._id)
       : users;
     const count = filteredUsers.length;
@@ -82,6 +94,14 @@ const UsersList = () => {
         )}
         <div className="d-flex flex-column">
           <SearchStatus numberOfUser={count} />
+          <input
+            type="text"
+            placeholder="Search..."
+            name="searchQuery"
+            onChange={handleSearchQuery}
+            value={searchQuery}
+          />
+
           <UsersTable
             users={usersCrop}
             onSort={handleSort}
@@ -111,4 +131,4 @@ Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
 };
 
-export default UsersList;
+export default UsersListPage;
