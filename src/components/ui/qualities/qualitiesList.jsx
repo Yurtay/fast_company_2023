@@ -1,5 +1,5 @@
 import React from "react";
-import Qualities from "./qualitie";
+import Qualities from "./quality";
 
 const QualitiesList = ({ quals }) => {
   return <Qualities quals={quals} />;
