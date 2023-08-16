@@ -7,11 +7,11 @@ const SelectField = ({
   defaultOption,
   options,
   error,
+  name
 }) => {
   const getInputClasses = () => {
     return "form-select" + (error ? " is-invalid" : "");
   };
-  console.log(getInputClasses());
 
   const optionsArray =
     !Array.isArray(options) && typeof options === "object"
@@ -20,12 +20,13 @@ const SelectField = ({
           value: options[opitonName]._id,
         }))
       : options;
+
   return (
     <div className="mb-4">
-      <label className="form-label">{label}</label>
+      <label className="form-label" htmlFor={name} >{label}</label>
       <select
         value={value}
-        className={getInputClasses}
+        className={getInputClasses()}
         // id="validationCustom04"
         onChange={onChange}
         name="profession"
@@ -40,7 +41,6 @@ const SelectField = ({
               {option.name}
             </option>
           ))}
-        <option>...</option>
       </select>
       {error && <div className="invalid-feedback">{error}</div>}
     </div>
