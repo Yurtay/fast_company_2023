@@ -12,7 +12,7 @@ const SelectField = ({
   const getInputClasses = () => {
     return "form-select" + (error ? " is-invalid" : "");
   };
-
+  console.log("SelectField", options);
   const handleChange = ({ target }) => {
     onChange({ name: target.name, value: target.value });
   };
@@ -20,7 +20,7 @@ const SelectField = ({
   const optionsArray =
     !Array.isArray(options) && typeof options === "object"
       ? Object.keys(options).map((opitonName) => ({
-          name: options[opitonName].name,
+          label: options[opitonName].name,
           value: options[opitonName]._id,
         }))
       : options;
@@ -43,7 +43,7 @@ const SelectField = ({
         {optionsArray &&
           optionsArray.map((option) => (
             <option key={option.value} value={option.value}>
-              {option.name}
+              {option.label}
             </option>
           ))}
         <option>...</option>

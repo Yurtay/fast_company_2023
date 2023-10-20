@@ -7,21 +7,30 @@ const UserPage = ({ userId }) => {
   const history = useHistory();
   const [user, setUser] = useState();
   useEffect(() => {
-    API.users.getUserById(userId).then((data) => setUser(data));
+    API.users.getById(userId).then((data) => setUser(data));
   }, []);
   const handleClick = (params) => {
     history.push("/users");
   };
+  const handleClickChange = (params) => {
+    // history.push(`/users/${userId}/edit`);
+    history.push(history.location.pathname + "/edit");
+  };
 
   if (user) {
     return (
-      <div className="m-3">
+      <div className="m-2">
         <h1>{user.name}</h1>
         <h2>Профессия: {user.profession.name}</h2>
         <QualitiesList quals={user.qualities} />
         <p>completed meetings: {user.completedMeetings}</p>
         <h2>Rate: {user.rate}</h2>
-        <button onClick={handleClick}>All users</button>
+        <div className="m-3">
+          <button onClick={handleClick}>All users</button>
+        </div>
+        <div className="m-2">
+          <button onClick={handleClickChange}>Change user</button>
+        </div>
       </div>
     );
   } else {
