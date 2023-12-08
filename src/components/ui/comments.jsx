@@ -9,7 +9,8 @@ const Comments = () => {
   const { userId } = useParams();
   const [comments, setComments] = useState([]);
   useEffect(() => {
-    API.comments.fetchCommentsForUser(userId).then((data) => setComments(data));
+    API.comments.fetchCommentsForUser(userId)
+    .then((data) => setComments(data));
   }, []);
 
   const handleSubmit = (data) => {
