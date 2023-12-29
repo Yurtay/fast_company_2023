@@ -1,20 +1,28 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom/cjs/react-router-dom";
+import { ToastContainer } from "react-toastify";
 import NavBar from "./components/ui/navBar";
 import Main from "./layouts/main";
 import Login from "./layouts/login";
 import Users from "./layouts/users";
+import { ProfessionProvider } from "./app/hooks/useProfession";
+import { QualitiesProvider } from "./app/hooks/useQualities";
 
 function App() {
   return (
     <>
       <NavBar />
-      <Switch>
-        <Route exact path="/" component={Main} />
-        <Route exact path="/login/:type?" component={Login} />
-        <Route exact path="/users/:userId?/:edit?" component={Users} />
-        <Redirect to="/" />
-      </Switch>
+      <QualitiesProvider>
+        <ProfessionProvider>
+          <Switch>
+            <Route exact path="/login/:type?" component={Login} />
+            <Route exact path="/users/:userId?/:edit?" component={Users} />
+            <Route exact path="/" component={Main} />
+            <Redirect to="/" />
+          </Switch>
+        </ProfessionProvider>
+      </QualitiesProvider>
+      <ToastContainer />
     </>
   );
 }
