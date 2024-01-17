@@ -22,7 +22,7 @@ const SelectField = ({
           label: options[opitonName].name,
           value: options[opitonName]._id,
         }))
-      : options;
+      : options.map((p) => ({ label: p.name, value: p._id }));
 
   return (
     <div className="mb-4">

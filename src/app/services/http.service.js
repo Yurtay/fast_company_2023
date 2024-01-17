@@ -1,15 +1,41 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import configFile from "../../config.json";
+import { httpAuth } from "../hooks/useAuth";
+import localStorageService from "./localStorage.service";
 
-axios.defaults.baseURL = configFile.apiEndpoint;
+const http = axios.create({
+  baseURL: configFile.apiEndpoint,
+});
 
-axios.interceptors.request.use(
-  function (config) {
+http.interceptors.request.use(
+  async function (config) {
     if (configFile.isFireBase) {
       const containSlash = /\/$/gi.test(config.url);
       config.url =
         (containSlash ? config.url.slice(0, -1) : config.url) + ".json";
+      const expiresDate = localStorageService.getTokenExpiresDate();
+      const refershToken = localStorageService.getRefreshToken();
+      if (refershToken && expiresDate < Date.now()) {
+        const { data } = await httpAuth.post(
+          `https://securetoken.googleapis.com/v1/token?key=${process.env.REACT_APP_FIREBASE_KEY}`,
+          {
+            grant_type: "refresh_token",
+            refresh_token: refershToken,
+          }
+        );
+
+        localStorageService.setTokens({
+          refreshToken: data.refresh_token,
+          idToken: data.id_token,
+          expiresIn: data.expires_id,
+          localId: data.user_id,
+        });
+      }
+      const accessToken = localStorageService.getAccessToken();
+      if (accessToken) {
+        config.params = { ...config.params, auth: accessToken };
+      }
     }
     return config;
   },
@@ -19,14 +45,14 @@ axios.interceptors.request.use(
 );
 
 function transformData(data) {
-  return data
+  return data && !data._id
     ? Object.keys(data).map((key) => ({
         ...data[key],
       }))
-    : [];
+    : data;
 }
 
-axios.interceptors.response.use(
+http.interceptors.response.use(
   (res) => {
     if (configFile.isFireBase) {
       res.data = { content: transformData(res.data) };
@@ -47,9 +73,9 @@ axios.interceptors.response.use(
   }
 );
 const httpService = {
-  get: axios.get,
-  post: axios.post,
-  put: axios.put,
-  delete: axios.delete,
+  get: http.get,
+  post: http.post,
+  put: http.put,
+  delete: http.delete,
 };
 export default httpService;

@@ -4,7 +4,7 @@ import { useQualities } from "../../../app/hooks/useQualities";
 const Qualities = ({ quals }) => {
   const { isLoading, getQuality } = useQualities();
   const newQuals = quals.map((q) => getQuality(q));
-  console.log(newQuals);
+  // console.log(newQuals);
   // const quality = getQuality()
   if (isLoading) return "Loading...";
   const getColorQualities = (color) => {
